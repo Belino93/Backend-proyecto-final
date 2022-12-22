@@ -17,7 +17,7 @@ class DeviceSeeders extends Seeder
     public function run()
     {
         Log::info('Seed device');
-        DB::table('device')->insert([
+        DB::table('devices')->insert([
             [
                 'marca' => 'Apple',
                 'modelo' => 'Iphone 8',
