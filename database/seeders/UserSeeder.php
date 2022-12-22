@@ -19,23 +19,23 @@ class UserSeeder extends Seeder
         Log::info('Seed users');
         DB::table('users')->insert([
             [
-                'name'=>'Fran',
-                'surname'=>'Cisco',
-                'email'=>'fran@gmail.com',
-                'password'=>'pass1234',
+                'name' => 'Fran',
+                'surname' => 'Cisco',
+                'email' => 'fran@gmail.com',
+                'password' => 'pass1234',
             ],
             [
-                'name'=>'Almu',
-                'surname'=>' Dena',
-                'email'=>'almu@gmail.com',
-                'password'=>'pass1234',
+                'name' => 'Almu',
+                'surname' => ' Dena',
+                'email' => 'almu@gmail.com',
+                'password' => 'pass1234',
             ],
             [
-                'name'=>'Abel',
-                'surname'=>'Madrid',
-                'email'=>'abel@gmail.com',
-                'password'=>'pass1234',
+                'name' => 'Abel',
+                'surname' => 'Madrid',
+                'email' => 'abel@gmail.com',
+                'password' => 'pass1234',
             ]
-            ]);
+        ]);
     }
 }
