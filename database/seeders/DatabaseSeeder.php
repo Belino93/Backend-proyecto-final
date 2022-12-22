@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(RepairSeeders::class);
         $this->call(DeviceSeeders::class);
+        $this->call(Device_Repair_Seeder::class);
     }
 }
