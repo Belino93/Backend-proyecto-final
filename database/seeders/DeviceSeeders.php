@@ -19,28 +19,28 @@ class DeviceSeeders extends Seeder
         Log::info('Seed device');
         DB::table('devices')->insert([
             [
-                'marca' => 'Apple',
-                'modelo' => 'Iphone 8',
+                'brand' => 'Apple',
+                'model' => 'Iphone 8',
             ],
             [
-                'marca' => 'Apple',
-                'modelo' => 'Iphone X',
+                'brand' => 'Apple',
+                'model' => 'Iphone X',
             ],
             [
-                'marca' => 'Apple',
-                'modelo' => 'Iphone 11',
+                'brand' => 'Apple',
+                'model' => 'Iphone 11',
             ],
             [
-                'marca' => 'Samsung',
-                'modelo' => 'S22',
+                'brand' => 'Samsung',
+                'model' => 'S22',
             ],
             [
-                'marca' => 'Samsung',
-                'modelo' => 'Galaxy fold',
+                'brand' => 'Samsung',
+                'model' => 'Galaxy fold',
             ],
             [
-                'marca' => 'One plus',
-                'modelo' => '9 pro',
+                'brand' => 'One plus',
+                'model' => '9 pro',
             ],
         ]);
     }
