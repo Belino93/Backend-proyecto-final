@@ -15,11 +15,20 @@ class Repair extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'tipo',
+
+        'type',
+
+        'marca',
+        'modelo',
+
     ];
 
     public function device()
     {
+
         $this->belongsToMany(Device::class, 'device_repair');
+
+        return $this->belongsToMany(Device::class, 'device_repair');
+
     }
 }

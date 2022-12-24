@@ -22,4 +22,5 @@ class Device extends Model
     {
         return $this->belongsToMany(Repair::class, 'device_repair');
     }
+
 }
