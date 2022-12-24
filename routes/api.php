@@ -22,3 +22,4 @@ use Illuminate\Support\Facades\Route;
 // Devices CRUD endpoints
 Route::get('/devices', [DeviceController::class, 'getDevices']);
 Route::post('/devices/branch', [DeviceController::class, 'getDevicesByBrand']);
+Route::post('/devices/new', [DeviceController::class, 'newDevice']);
