@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->string('brand');
-            $table->string('model');
+            $table->string('model')->unique();
             $table->timestamps();
         });
     }

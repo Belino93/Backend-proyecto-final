@@ -73,8 +73,8 @@ class DeviceController extends Controller
     {
         Log::info('Creating new device');
         $validator = Validator::make($request->all(), [
-            'branch' => 'required|string|max:255',
-            'model'
+            'branch' => 'required|string|max:50',
+            'model' => 'required|string|max50',
         ]);
 
         if ($validator->fails()) {
