@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('repairs', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo')->unique();
+            $table->string('type')->unique();
             $table->timestamps();
         });
     }

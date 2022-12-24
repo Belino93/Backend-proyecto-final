@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->string('marca');
-            $table->string('modelo');
+            $table->string('brand');
+            $table->string('model');
             $table->timestamps();
         });
     }
