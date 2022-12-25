@@ -24,5 +24,6 @@ Route::get('/devices', [DeviceController::class, 'getDevices']);
 Route::patch('/devices', [DeviceController::class, 'updateDevice']);
 Route::delete('devices', [DeviceController::class, 'deleteDevice']);
 
-Route::post('/devices/branch', [DeviceController::class, 'getDevicesByBrand']);
+Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
+Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
 Route::post('/devices/new', [DeviceController::class, 'newDevice']);

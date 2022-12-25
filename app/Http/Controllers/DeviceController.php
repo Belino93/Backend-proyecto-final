@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -187,5 +188,28 @@ class DeviceController extends Controller
                 'message' => 'Something went wrong dropping device',
             ], 400);
         }
+    }
+
+    // Get brands 
+    public function getBrands()
+    {
+        Log::info('Getting device brands');
+
+        try {
+           $brands = DB::table('devices')->select('brand')->distinct()->get();
+
+           return response([
+            'success'=> true,
+            'message'=> 'Retrieving brands successfully',
+            'data' => $brands
+           ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Something went wrong retrieving brands',
+            ], 400);
+        }
+
     }
 }
