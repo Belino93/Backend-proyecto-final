@@ -114,7 +114,7 @@ class DeviceController extends Controller
 
         try {
             $validator = Validator::make($request->all(), [
-                'device_id'=> 'required|integer',
+                'device_id' => 'required|integer',
                 'brand' => 'required|string|max:255',
                 'model' => 'required|string|max:255',
             ]);
@@ -127,21 +127,20 @@ class DeviceController extends Controller
             }
             $device = Device::find($request->input('device_id'));
 
-            if(!$device){
+            if (!$device) {
                 return response([
                     'success' => true,
                     'message' => 'device_id dont match'
                 ], 400);
             }
 
-            $device -> brand = $request->input('brand');
-            $device -> model = $request->input('model');
+            $device->brand = $request->input('brand');
+            $device->model = $request->input('model');
             $device->save();
             return response([
                 'success' => true,
                 'message' => 'Device updated'
             ], 200);
-
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response([
@@ -149,16 +148,15 @@ class DeviceController extends Controller
                 'message' => 'Something went wrong updating device',
             ], 400);
         }
-        
     }
 
     // Delete device
     public function deleteDevice(Request $request)
     {
-        Log::info('Creating new device');
+        Log::info('Deleting device');
         try {
             $validator = Validator::make($request->all(), [
-                'device_id'=> 'required|integer',
+                'device_id' => 'required|integer',
             ]);
 
             if ($validator->fails()) {
@@ -169,7 +167,7 @@ class DeviceController extends Controller
             }
 
             $device = Device::find($request->input('device_id'));
-            if(!$device){
+            if (!$device) {
                 return response([
                     'success' => true,
                     'message' => 'device_id dont match'
@@ -180,7 +178,6 @@ class DeviceController extends Controller
                 'success' => true,
                 'message' => 'Device dropped succesfully'
             ], 200);
-
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response([
@@ -196,13 +193,13 @@ class DeviceController extends Controller
         Log::info('Getting device brands');
 
         try {
-           $brands = DB::table('devices')->select('brand')->distinct()->get();
+            $brands = DB::table('devices')->select('brand')->distinct()->get();
 
-           return response([
-            'success'=> true,
-            'message'=> 'Retrieving brands successfully',
-            'data' => $brands
-           ]);
+            return response([
+                'success' => true,
+                'message' => 'Retrieving brands successfully',
+                'data' => $brands
+            ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response([
@@ -210,6 +207,5 @@ class DeviceController extends Controller
                 'message' => 'Something went wrong retrieving brands',
             ], 400);
         }
-
     }
 }
