@@ -19,6 +19,11 @@ return new class extends Migration
             $table->unsignedBigInteger('repair_id');
             $table->bigInteger('imei');
             $table->unsignedBigInteger('user_id');
+            $table->boolean('accepted')->default(0);
+            $table->boolean('recieved')->default(0);
+            $table->boolean('in_repair')->default(0);
+            $table->boolean('repaired')->default(0);
+            $table->boolean('finished')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
