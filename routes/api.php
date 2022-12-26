@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\RepairController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,9 @@ Route::delete('devices', [DeviceController::class, 'deleteDevice']);
 Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
 Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
 Route::post('/devices/new', [DeviceController::class, 'newDevice']);
+
+// Repairs CRUD endpoints
+Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
+Route::post('/repairs', [RepairController::class, 'newRepair']);
+Route::patch('/repairs', [RepairController::class, 'updateRepair']);
+Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
