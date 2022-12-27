@@ -43,5 +43,5 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/profile', [AuthController::class, 'profile']);
 });

@@ -49,4 +49,8 @@ class AuthController extends Controller
             'token' => $jwt_token,
         ]);
     }
+    public function profile()
+    {
+        return response()->json(auth()->user());
+    }
 }
