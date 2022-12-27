@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\RepairController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,10 @@ Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
 Route::post('/repairs', [RepairController::class, 'newRepair']);
 Route::patch('/repairs', [RepairController::class, 'updateRepair']);
 Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
+
+// User DRUD endpoints
+Route::get('/users', [UserController::class, 'getUsers']);
+
 
 // Auth endpoints
 Route::post('/register', [AuthController::class, 'register']);
