@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\RepairController;
 use Illuminate\Http\Request;
@@ -34,3 +35,13 @@ Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
 Route::post('/repairs', [RepairController::class, 'newRepair']);
 Route::patch('/repairs', [RepairController::class, 'updateRepair']);
 Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
+
+// Auth endpoints
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::group([
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+});
