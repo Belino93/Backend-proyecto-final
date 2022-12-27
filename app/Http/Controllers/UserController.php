@@ -34,7 +34,7 @@ class UserController extends Controller
     {
         Log::info('Updating userName');
         $userId = auth()->user()->id;
-        
+
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|max:100|string',
@@ -68,5 +68,34 @@ class UserController extends Controller
                 'message' => 'Update user fails',
             ], 400);
         }
+    }
+
+    public function deleteUser(Request $request)
+    {
+        Log::info('Dropping user');
+        $userId = auth()->user()->id;
+
+        try {
+            $user = User::find($userId);
+            if ($user->role_id === 2) {
+                return response([
+                    'success'=> true,
+                    'message'=> "Admins can't be deleted"
+                ], 400);
+            }
+            $user->delete();
+            return response([
+                'success'=> true,
+                'message'=>'Profile deleted',
+            ], 200);
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Fail dropping user',
+            ], 400);
+        }
+
     }
 }
