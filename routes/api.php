@@ -37,8 +37,15 @@ Route::post('/repairs', [RepairController::class, 'newRepair']);
 Route::patch('/repairs', [RepairController::class, 'updateRepair']);
 Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
 
-// User DRUD endpoints
+// User endpoints(ADMIN)
 Route::get('/users', [UserController::class, 'getUsers']);
+
+//JWT user endpoint
+Route::group([
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::patch('/users', [UserController::class, 'updateUser']);
+});
 
 
 // Auth endpoints
