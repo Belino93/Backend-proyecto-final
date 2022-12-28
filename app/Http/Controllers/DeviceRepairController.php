@@ -20,7 +20,8 @@ class DeviceRepairController extends Controller
             $repairs = DB::table('device_repair')
                 ->join('devices', 'device_repair.device_id', '=', 'devices.id')
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
-                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei')
+                ->join('states', 'device_repair.state_id', '=', 'states.id')
+                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name')
                 ->where('user_id', '=', $userId)
                 ->get();
             if (count($repairs) === 0) {
