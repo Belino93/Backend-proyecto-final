@@ -100,4 +100,106 @@ class DeviceRepairController extends Controller
             ], 400);
         }
     }
+
+    //Next state (admin)
+    public function nextRepairState(Request $request)
+    {
+        Log::info('User repair updated to next state');
+        try {
+            $userRoleId = auth()->user()->role_id;
+            $validator = Validator::make($request->all(), [
+                'device_repair_id' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'message' => $validator->messages()
+                ], 400);
+            }
+            if ($userRoleId !== 2) {
+                return response([
+                    'success' => true,
+                    'message' => 'Only admin can do this'
+                ], 400);
+            }
+
+            $user_repair = DB::table('device_repair')
+                ->where('id', '=', $request->input('device_repair_id'))
+                ->get();
+
+            if ($user_repair[0]->state_id === 6) {
+                return response([
+                    'success' => true,
+                    'message' => 'The repair have the last state'
+                ]);
+            }
+
+            DB::table('device_repair')
+                ->where('id', '=', $request->input('device_repair_id'))
+                ->update(['state_id' => $user_repair[0]->state_id + 1]);
+
+            return response([
+                'success' => true,
+                'message' => 'Repair updated to next state successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Something went wrong updating state',
+            ], 400);
+        }
+    }
+
+        //Prev state (admin)
+        public function prevRepairState(Request $request)
+        {
+            Log::info('User repair updated to prev state');
+            try {
+                $userRoleId = auth()->user()->role_id;
+                $validator = Validator::make($request->all(), [
+                    'device_repair_id' => 'required|integer',
+                ]);
+    
+                if ($validator->fails()) {
+                    return response([
+                        'success' => false,
+                        'message' => $validator->messages()
+                    ], 400);
+                }
+                if ($userRoleId !== 2) {
+                    return response([
+                        'success' => true,
+                        'message' => 'Only admin can do this'
+                    ], 400);
+                }
+    
+                $user_repair = DB::table('device_repair')
+                    ->where('id', '=', $request->input('device_repair_id'))
+                    ->get();
+    
+                if ($user_repair[0]->state_id === 1) {
+                    return response([
+                        'success' => true,
+                        'message' => 'The repair have the first state'
+                    ]);
+                }
+    
+                DB::table('device_repair')
+                    ->where('id', '=', $request->input('device_repair_id'))
+                    ->update(['state_id' => $user_repair[0]->state_id - 1]);
+    
+                return response([
+                    'success' => true,
+                    'message' => 'Repair updated to prev state successfully',
+                ], 200);
+            } catch (\Throwable $th) {
+                Log::error($th->getMessage());
+                return response([
+                    'success' => false,
+                    'message' => 'Something went wrong updating state',
+                ], 400);
+            }
+        }
 }
