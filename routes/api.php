@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\DeviceRepairController;
 use App\Http\Controllers\RepairController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -40,12 +41,20 @@ Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
 // User endpoints(ADMIN)
 Route::get('/users', [UserController::class, 'getUsers']);
 
-//JWT user endpoint
+//JWT user endpoints
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::patch('/users', [UserController::class, 'updateUser']);
     Route::delete('/users', [UserController::class, 'deleteUser']);
+});
+
+// JWT user repairs endpoints
+Route::group([
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
+    
 });
 
 
