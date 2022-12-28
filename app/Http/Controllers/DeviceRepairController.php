@@ -89,7 +89,8 @@ class DeviceRepairController extends Controller
 
             return response([
                 'success' => true,
-                'message' => 'Profile deleted',
+                'message' => 'Repair created succesfully',
+
             ], 200);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
