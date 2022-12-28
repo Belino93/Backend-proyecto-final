@@ -54,6 +54,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
+    Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
     
 });
 
