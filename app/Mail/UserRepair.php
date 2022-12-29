@@ -20,9 +20,9 @@ class UserRepair extends Mailable
      *
      * @return void
      */
-    public function __construct($userRepairMailData)
+    public function __construct($mailData)
     {
-        $this->userRepairMailData = $userRepairMailData;
+        $this->mailData = $mailData;
     }
 
     /**
