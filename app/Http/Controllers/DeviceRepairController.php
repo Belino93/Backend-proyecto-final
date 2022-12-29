@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserRepair;
 use App\Models\Device;
 use App\Models\Repair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class DeviceRepairController extends Controller
@@ -55,7 +57,7 @@ class DeviceRepairController extends Controller
                 'device_id' => 'required|integer',
                 'imei' => 'required|integer|',
                 'repair_id' => 'required|integer',
-                'description'=> 'string'
+                'description' => 'string'
             ]);
 
             if ($validator->fails()) {
@@ -79,7 +81,7 @@ class DeviceRepairController extends Controller
                     'message' => "The device_id not exist"
                 ], 400);
             }
-            $newUserRepair = DB::table('device_repair')
+            DB::table('device_repair')
                 ->insert([
                     'device_id' => $device->id,
                     'repair_id' => $repair->id,
@@ -87,6 +89,20 @@ class DeviceRepairController extends Controller
                     'user_id' => $userId,
                     'description' => $request->input('description')
                 ]);
+            $userRepairData = DB::table('device_repair')
+                ->join('devices', 'device_repair.device_id', '=', 'devices.id')
+                ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
+                ->join('states', 'device_repair.state_id', '=', 'states.id')
+                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.description')
+                ->where('user_id', '=', $userId)
+                ->latest('device_repair.id')
+                ->limit(1)
+                ->get();
+            $mailData = [
+                'title' => 'Welcome to Fixapp',
+                'userRepair' => $userRepairData
+            ];
+            Mail::to(auth()->user()->email)->send(new UserRepair($mailData));
 
             return response([
                 'success' => true,
@@ -214,7 +230,7 @@ class DeviceRepairController extends Controller
                 'device_id' => 'required|integer',
                 'imei' => 'required|integer|',
                 'repair_id' => 'required|integer',
-                'description'=> 'string'
+                'description' => 'string'
             ]);
 
             if ($validator->fails()) {
