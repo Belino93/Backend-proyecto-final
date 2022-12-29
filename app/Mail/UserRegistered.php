@@ -34,6 +34,6 @@ class UserRegistered extends Mailable
     public function build()
     {
         return $this->subject('Register complete')
-            ->view('emails.testMail');
+            ->view('emails.registerMail');
     }
 }
