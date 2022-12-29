@@ -49,14 +49,13 @@ class DeviceRepairController extends Controller
     public function newDeviceRepair(Request $request)
     {
         Log::info('New user repair');
-
-
         try {
             $userId = auth()->user()->id;
             $validator = Validator::make($request->all(), [
                 'device_id' => 'required|integer',
                 'imei' => 'required|integer|',
-                'repair_id' => 'required|integer'
+                'repair_id' => 'required|integer',
+                'description'=> 'string'
             ]);
 
             if ($validator->fails()) {
@@ -85,13 +84,13 @@ class DeviceRepairController extends Controller
                     'device_id' => $device->id,
                     'repair_id' => $repair->id,
                     'imei' => $request->input('imei'),
-                    'user_id' => $userId
+                    'user_id' => $userId,
+                    'description' => $request->input('description')
                 ]);
 
             return response([
                 'success' => true,
                 'message' => 'Repair created succesfully',
-
             ], 200);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -153,54 +152,97 @@ class DeviceRepairController extends Controller
         }
     }
 
-        //Prev state (admin)
-        public function prevRepairState(Request $request)
-        {
-            Log::info('User repair updated to prev state');
-            try {
-                $userRoleId = auth()->user()->role_id;
-                $validator = Validator::make($request->all(), [
-                    'device_repair_id' => 'required|integer',
-                ]);
-    
-                if ($validator->fails()) {
-                    return response([
-                        'success' => false,
-                        'message' => $validator->messages()
-                    ], 400);
-                }
-                if ($userRoleId !== 2) {
-                    return response([
-                        'success' => true,
-                        'message' => 'Only admin can do this'
-                    ], 400);
-                }
-    
-                $user_repair = DB::table('device_repair')
-                    ->where('id', '=', $request->input('device_repair_id'))
-                    ->get();
-    
-                if ($user_repair[0]->state_id === 1) {
-                    return response([
-                        'success' => true,
-                        'message' => 'The repair have the first state'
-                    ]);
-                }
-    
-                DB::table('device_repair')
-                    ->where('id', '=', $request->input('device_repair_id'))
-                    ->update(['state_id' => $user_repair[0]->state_id - 1]);
-    
-                return response([
-                    'success' => true,
-                    'message' => 'Repair updated to prev state successfully',
-                ], 200);
-            } catch (\Throwable $th) {
-                Log::error($th->getMessage());
+    //Prev state (admin)
+    public function prevRepairState(Request $request)
+    {
+        Log::info('User repair updated to prev state');
+        try {
+            $userRoleId = auth()->user()->role_id;
+            $validator = Validator::make($request->all(), [
+                'device_repair_id' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
                 return response([
                     'success' => false,
-                    'message' => 'Something went wrong updating state',
+                    'message' => $validator->messages()
                 ], 400);
             }
+            if ($userRoleId !== 2) {
+                return response([
+                    'success' => true,
+                    'message' => 'Only admin can do this'
+                ], 400);
+            }
+
+            $user_repair = DB::table('device_repair')
+                ->where('id', '=', $request->input('device_repair_id'))
+                ->get();
+
+            if ($user_repair[0]->state_id === 1) {
+                return response([
+                    'success' => true,
+                    'message' => 'The repair have the first state'
+                ]);
+            }
+
+            DB::table('device_repair')
+                ->where('id', '=', $request->input('device_repair_id'))
+                ->update(['state_id' => $user_repair[0]->state_id - 1]);
+
+            return response([
+                'success' => true,
+                'message' => 'Repair updated to prev state successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Something went wrong updating state',
+            ], 400);
         }
+    }
+
+    // Update user_repair
+    public function updateUserRepair(Request $request)
+    {
+        Log::info('Updating user repair');
+        try {
+            $userRoleId = auth()->user()->role_id;
+            $validator = Validator::make($request->all(), [
+                'device_repair_id' => 'required|integer',
+                'device_id' => 'required|integer',
+                'imei' => 'required|integer|',
+                'repair_id' => 'required|integer',
+                'description'=> 'string'
+            ]);
+
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'message' => $validator->messages()
+                ], 400);
+            }
+            if ($userRoleId !== 2) {
+                return response([
+                    'success' => true,
+                    'message' => 'Only admin can do this'
+                ], 400);
+            }
+            DB::table('device_repair')
+                ->where('id', '=', $request->input('device_repair_id'))
+                ->update([
+                    'device_id' => $request->input('device_id'),
+                    'imei' => $request->input('imei'),
+                    'repair_id' => $request->input('repair_id'),
+                    'description' => $request->input('description')
+                ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Something went wrong updating user repair',
+            ], 400);
+        }
+    }
 }

@@ -55,6 +55,8 @@ Route::group([
 ], function () {
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
     Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
+    Route::patch('/user/repairs', [DeviceRepairController::class, 'updateUserRepair']);
+    
     Route::patch('/user/repairs/next', [DeviceRepairController::class, 'nextRepairState']);
     Route::patch('/user/repairs/prev', [DeviceRepairController::class, 'prevRepairState']);
     
