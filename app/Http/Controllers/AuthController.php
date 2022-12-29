@@ -18,10 +18,7 @@ class AuthController extends Controller
     // Register
     public function register(Request $request)
     {
-        $testMailData = [
-            'title' => 'Welcome to Fixapp',
-            'body' => 'Register successfully'
-        ];
+        
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -39,7 +36,11 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
         $token = JWTAuth::fromUser($user);
-        Mail::to($request->input('email'))->send(new UserRegistered($testMailData));
+        $mailData = [
+            'title' => 'Welcome to Fixapp',
+            'user' => $user
+        ];
+        Mail::to($request->input('email'))->send(new UserRegistered($mailData));
         return response()->json(compact('user', 'token'), 201);
     }
     // Login
