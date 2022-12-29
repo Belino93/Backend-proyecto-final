@@ -20,6 +20,7 @@ return new class extends Migration
             $table->bigInteger('imei');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('state_id')->default(1);
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
