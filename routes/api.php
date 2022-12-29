@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceRepairController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\RepairController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -72,3 +73,8 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
 });
+
+// Mail endpoint
+Route::get('/send-email', [EmailController::class, 'index']);
+
+

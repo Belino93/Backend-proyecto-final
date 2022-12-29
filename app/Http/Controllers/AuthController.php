@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserRegister;
+use App\Mail\UserRegistered;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Mail;
+
+
 
 class AuthController extends Controller
 {
     // Register
     public function register(Request $request)
     {
+        $testMailData = [
+            'title' => 'Welcome to Fixapp',
+            'body' => 'Register successfully'
+        ];
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
@@ -29,6 +39,7 @@ class AuthController extends Controller
             'password' => bcrypt($request->password)
         ]);
         $token = JWTAuth::fromUser($user);
+        Mail::to($request->input('email'))->send(new UserRegistered($testMailData));
         return response()->json(compact('user', 'token'), 201);
     }
     // Login
