@@ -48,6 +48,7 @@ Route::group([
 ], function () {
     Route::patch('/users', [UserController::class, 'updateUser']);
     Route::delete('/users', [UserController::class, 'deleteUser']);
+    Route::patch('/users/admin', [UserController::class, 'userUpdateRole']);
 });
 
 // JWT user repairs endpoints
@@ -76,5 +77,6 @@ Route::group([
 
 // Mail endpoint
 Route::get('/send-email', [EmailController::class, 'index']);
+
 
 
