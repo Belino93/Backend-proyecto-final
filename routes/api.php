@@ -24,27 +24,22 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+// Auth public endpoints
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
 // Devices CRUD endpoints
-Route::get('/devices', [DeviceController::class, 'getDevices']);
-Route::patch('/devices', [DeviceController::class, 'updateDevice']);
-Route::delete('devices', [DeviceController::class, 'deleteDevice']);
-
-Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
-Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
-Route::post('/devices/new', [DeviceController::class, 'newDevice']);
-
-// Repairs CRUD endpoints
-Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
-Route::post('/repairs', [RepairController::class, 'newRepair']);
-Route::patch('/repairs', [RepairController::class, 'updateRepair']);
-Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
-
-// User endpoints(ADMIN)
-Route::get('/users', [UserController::class, 'getUsers']);
+Route::group([
+    'middleware' => 'jwt.auth'
+], function () {
+    Route::get('/devices', [DeviceController::class, 'getDevices']);
+    Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
+    Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
+});
 
 //JWT user endpoints
 Route::group([
-    'middleware' => 'jwt.auth'
+    'middleware' => ['jwt.auth', 'isAdmin']
 ], function () {
     Route::patch('/users', [UserController::class, 'updateUser']);
     Route::delete('/users', [UserController::class, 'deleteUser']);
@@ -57,17 +52,9 @@ Route::group([
 ], function () {
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
     Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
-    Route::patch('/user/repairs', [DeviceRepairController::class, 'updateUserRepair']);
-    
-    Route::patch('/user/repairs/next', [DeviceRepairController::class, 'nextRepairState']);
-    Route::patch('/user/repairs/prev', [DeviceRepairController::class, 'prevRepairState']);
-    
 });
 
-
-// Auth endpoints
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Auth endpoint
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
@@ -75,8 +62,25 @@ Route::group([
     Route::get('/profile', [AuthController::class, 'profile']);
 });
 
-// Mail endpoint
-Route::get('/send-email', [EmailController::class, 'index']);
+// Admin endpoint
+Route::group([
+    'middleware' => ['jwt.auth', 'isAdmin']
+], function () {
+    // User repairs
+    Route::patch('/user/repairs', [DeviceRepairController::class, 'updateUserRepair']);
+    Route::patch('/user/repairs/next', [DeviceRepairController::class, 'nextRepairState']);
+    Route::patch('/user/repairs/prev', [DeviceRepairController::class, 'prevRepairState']);
 
+    // User endpoints(ADMIN)
+    Route::get('/users', [UserController::class, 'getUsers']);
 
-
+    // Repairs CRUD endpoints
+    Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
+    Route::post('/repairs', [RepairController::class, 'newRepair']);
+    Route::patch('/repairs', [RepairController::class, 'updateRepair']);
+    Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
+    // Devices endpoint
+    Route::post('/devices/new', [DeviceController::class, 'newDevice']);
+    Route::patch('/devices', [DeviceController::class, 'updateDevice']);
+    Route::delete('devices', [DeviceController::class, 'deleteDevice']);
+});
