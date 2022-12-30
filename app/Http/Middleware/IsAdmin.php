@@ -22,15 +22,12 @@ class IsAdmin
         $user = User::find($userId);
 
         $hasAdminRole = $user->role_id;
-
-        if($hasAdminRole !== 1) {
+        if($hasAdminRole !== 2) {
             return response()->json([
                 "success" => true,
                 "message" => "Only admin can do this"
             ]);
         }
-
-
         return $next($request);
     }
 }
