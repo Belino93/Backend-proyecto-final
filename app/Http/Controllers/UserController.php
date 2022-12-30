@@ -55,11 +55,10 @@ class UserController extends Controller
             $user->save();
 
             return response([
-                "success"=>true,
-                'message'=>'Username updated',
-                'data'=> [$user->name, $user->surname]
-            ], 200); 
-
+                "success" => true,
+                'message' => 'Username updated',
+                'data' => [$user->name, $user->surname]
+            ], 200);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
@@ -79,16 +78,15 @@ class UserController extends Controller
             $user = User::find($userId);
             if ($user->role_id === 2) {
                 return response([
-                    'success'=> true,
-                    'message'=> "Admins can't be deleted"
+                    'success' => true,
+                    'message' => "Admins can't be deleted"
                 ], 400);
             }
             $user->delete();
             return response([
-                'success'=> true,
-                'message'=>'Profile deleted',
+                'success' => true,
+                'message' => 'Profile deleted',
             ], 200);
-
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return response([
@@ -96,6 +94,54 @@ class UserController extends Controller
                 'message' => 'Fail dropping user',
             ], 400);
         }
+    }
 
+    // Admin can update users to admin
+    public function userUpdateRole(Request $request)
+    {
+        Log::info('User update role');
+
+        try {
+            $isAdmin = auth()->user()->role_id;
+
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'message' => $validator->messages()
+                ], 400);
+            }
+
+            if ($isAdmin !== 2) {
+                return response([
+                    'success' => true,
+                    'message' => "Only admins can do this"
+                ], 400);
+            }
+            $user = User::find($request->input('user_id'));
+
+            if (!$user) {
+                return response([
+                    'success' => true,
+                    'message' => 'device_id dont match'
+                ], 400);
+            }
+            $user->role_id = 2;
+            $user->save();
+
+            return response([
+                'success' => true,
+                'message' => 'User role updated'
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Something went wrong updating role user',
+            ], 400);
+        }
     }
 }
