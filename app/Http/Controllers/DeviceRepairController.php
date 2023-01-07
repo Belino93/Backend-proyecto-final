@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class DeviceRepairController extends Controller
 {
-    // Get all deviceRepair (admin)
+    // Get all deviceRepair ()
     public function getUserRepairs(Request $request)
     {
         Log::info('Getting user repairs');
@@ -43,6 +43,38 @@ class DeviceRepairController extends Controller
             return response([
                 'success' => false,
                 'message' => 'Get user repairs',
+            ], 400);
+        }
+    }
+
+    public function getAllUsersRepairs()
+    {
+        Log::info('Getting all repairs');
+        try {
+            $userRole = auth()->user()->role_id;
+            if ($userRole !== 2) {
+                return response([
+                    'success' => true,
+                    'message' => "Not authorized"
+                ], 400);
+            }
+            $repairs = DB::table('device_repair')
+                ->join('devices', 'device_repair.device_id', '=', 'devices.id')
+                ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
+                ->join('states', 'device_repair.state_id', '=', 'states.id')
+                ->join('users', 'device_repair.user_id', '=', 'users.id')
+                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'users.email')
+                ->get();
+            return response([
+                'success' => true,
+                'message' => 'Retrieving all repairs successfully',
+                'data' => $repairs
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Fail creating user repair',
             ], 400);
         }
     }
