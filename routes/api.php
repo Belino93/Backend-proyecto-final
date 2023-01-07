@@ -70,6 +70,7 @@ Route::group([
     Route::patch('/user/repairs', [DeviceRepairController::class, 'updateUserRepair']);
     Route::patch('/user/repairs/next', [DeviceRepairController::class, 'nextRepairState']);
     Route::patch('/user/repairs/prev', [DeviceRepairController::class, 'prevRepairState']);
+    Route::get('/admin/repairs', [DeviceRepairController::class, 'getAllUsersRepairs']);
 
     // User endpoints(ADMIN)
     Route::get('/users', [UserController::class, 'getUsers']);
