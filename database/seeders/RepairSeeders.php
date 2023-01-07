@@ -18,13 +18,13 @@ class RepairSeeders extends Seeder
     {
         Log::info('Seed repairs');
         DB::table('repairs')->insert([
-            ['type' => 'Cambio de pantalla'],
-            ['type' => 'Cambio de conector de carga'],
-            ['type' => 'Cambio altavoz superior'],
-            ['type' => 'Cambio altavoz inferior'],
-            ['type' => 'Cambio de bateria'],
-            ['type' => 'Cambio camara trasera'],
-            ['type' => 'Cambio camara frontal'],
+            ['type' => 'Screen replacement'],
+            ['type' => 'Connector replacement'],
+            ['type' => 'Speaker replacement '],
+            ['type' => 'Buzzer replacement '],
+            ['type' => 'Battery replacement'],
+            ['type' => 'Rear camera replacement'],
+            ['type' => 'Front camera replacement'],
         ]);
     }
 }
