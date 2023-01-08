@@ -23,8 +23,9 @@ class DeviceRepairController extends Controller
                 ->join('devices', 'device_repair.device_id', '=', 'devices.id')
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
                 ->join('states', 'device_repair.state_id', '=', 'states.id')
-                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name')
+                ->select('device_repair.id', 'devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.created_at', 'device_repair.updated_at')
                 ->where('user_id', '=', $userId)
+                ->orderBy('device_repair.id', 'desc')
                 ->get();
             if (count($repairs) === 0) {
                 return response([
@@ -47,6 +48,51 @@ class DeviceRepairController extends Controller
         }
     }
 
+    public function getAllUserRepairByImei(Request $request)
+    {
+        Log::info('Getting all user repairs by Imei');
+        try {
+            $userId = auth()->user()->id;
+            $validator = Validator::make($request->all(), [
+                'imei' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'message' => $validator->messages()
+                ], 400);
+            }
+            $repairs = DB::table('device_repair')
+                ->join('devices', 'device_repair.device_id', '=', 'devices.id')
+                ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
+                ->join('states', 'device_repair.state_id', '=', 'states.id')
+                ->select('device_repair.id', 'devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.created_at', 'device_repair.updated_at')
+                ->where('user_id', '=', $userId)
+                ->where('device_repair.imei', 'like', '%'.$request->input('imei').'%')
+                ->orderBy('device_repair.id', 'desc')
+                ->get();
+            if(!$repairs){
+                return response([
+                    'success' => true,
+                    'message' => 'no matches'
+                ], 400);
+            }
+            return response([
+                'success' => true,
+                'message' => 'Retrieving by imei successfully',
+                'data' => $repairs
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response([
+                'success' => false,
+                'message' => 'Fail retrieving by imei',
+            ], 400);
+        }
+    }
+
+
     public function getAllUsersRepairs()
     {
         Log::info('Getting all repairs');
@@ -63,7 +109,8 @@ class DeviceRepairController extends Controller
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
                 ->join('states', 'device_repair.state_id', '=', 'states.id')
                 ->join('users', 'device_repair.user_id', '=', 'users.id')
-                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'users.email')
+                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'users.email', 'device_repair.created_at', 'device_repair.updated_at')
+                ->orderBy('device_repair.id', 'desc')
                 ->get();
             return response([
                 'success' => true,
@@ -119,22 +166,23 @@ class DeviceRepairController extends Controller
                     'repair_id' => $repair->id,
                     'imei' => $request->input('imei'),
                     'user_id' => $userId,
-                    'description' => $request->input('description')
+                    'description' => $request->input('description'),
+                    'created_at' => date("Y-m-d") . (' ') . date("h:i:s")
                 ]);
-            $userRepairData = DB::table('device_repair')
-                ->join('devices', 'device_repair.device_id', '=', 'devices.id')
-                ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
-                ->join('states', 'device_repair.state_id', '=', 'states.id')
-                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.description')
-                ->where('user_id', '=', $userId)
-                ->latest('device_repair.id')
-                ->limit(1)
-                ->get();
-            $mailData = [
-                'title' => 'Welcome to Fixapp',
-                'userRepair' => $userRepairData
-            ];
-            Mail::to(auth()->user()->email)->send(new UserRepair($mailData));
+            // $userRepairData = DB::table('device_repair')
+            //     ->join('devices', 'device_repair.device_id', '=', 'devices.id')
+            //     ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
+            //     ->join('states', 'device_repair.state_id', '=', 'states.id')
+            //     ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.description')
+            //     ->where('user_id', '=', $userId)
+            //     ->latest('device_repair.id')
+            //     ->limit(1)
+            //     ->get();
+            // $mailData = [
+            //     'title' => 'Welcome to Fixapp',
+            //     'userRepair' => $userRepairData
+            // ];
+            // Mail::to(auth()->user()->email)->send(new UserRepair($mailData));
 
             return response([
                 'success' => true,
@@ -185,7 +233,7 @@ class DeviceRepairController extends Controller
 
             DB::table('device_repair')
                 ->where('id', '=', $request->input('device_repair_id'))
-                ->update(['state_id' => $user_repair[0]->state_id + 1]);
+                ->update(['state_id' => $user_repair[0]->state_id + 1, 'updated_at' => date("Y-m-d") . (' ') . date("h:i:s")]);
 
             return response([
                 'success' => true,
@@ -236,7 +284,7 @@ class DeviceRepairController extends Controller
 
             DB::table('device_repair')
                 ->where('id', '=', $request->input('device_repair_id'))
-                ->update(['state_id' => $user_repair[0]->state_id - 1]);
+                ->update(['state_id' => $user_repair[0]->state_id - 1, 'updated_at' => date("Y-m-d") . (' ') . date("h:i:s")]);
 
             return response([
                 'success' => true,

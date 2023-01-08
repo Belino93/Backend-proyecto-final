@@ -52,6 +52,7 @@ Route::group([
 ], function () {
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
     Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
+    Route::post('/user/repairs/imei', [DeviceRepairController::class, 'getAllUserRepairByImei']);
 });
 
 // Auth endpoint
