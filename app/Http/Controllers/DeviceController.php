@@ -48,7 +48,6 @@ class DeviceController extends Controller
             }
             $brand = $request->input('brand');
             $devices = Device::where('brand', $brand)->get();
-            dd($devices);
             if (!$devices) {
                 return response([
                     'success' => true,
