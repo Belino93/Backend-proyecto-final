@@ -6,6 +6,7 @@ use App\Models\Repair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class RepairController extends Controller
 {
@@ -20,13 +21,14 @@ class RepairController extends Controller
                 'success' => true,
                 'message' => 'All devices retrieved successfully',
                 'data' => $repairs,
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+            
             return response([
                 'success' => false,
                 'message' => 'Something went wrong retrieving repairs',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -43,7 +45,7 @@ class RepairController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $repair = new Repair;
             $repair->type = $request->input('type');
@@ -56,10 +58,11 @@ class RepairController extends Controller
             ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong creating repair',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -77,7 +80,7 @@ class RepairController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $repair = Repair::find($request->input('repair_id'));
 
@@ -85,21 +88,23 @@ class RepairController extends Controller
                 return response([
                     'success' => true,
                     'message' => 'repair_id dont match'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $repair->type = $request->input('type');
             $repair->save();
+
             return response([
                 'success' => true,
                 'message' => 'Device updated'
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong updating repair',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
     public function deleteRepair(Request $request)
@@ -114,7 +119,7 @@ class RepairController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $repair = Repair::find($request->input('repair_id'));
 
@@ -122,20 +127,21 @@ class RepairController extends Controller
                 return response([
                     'success' => true,
                     'message' => 'repair_id dont match'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $repair->delete();
 
             return response([
                 'success' => true,
                 'message' => 'Device dropped succesfully'
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+            
             return response([
                 'success' => false,
                 'message' => 'Something went wrong dropping repair',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

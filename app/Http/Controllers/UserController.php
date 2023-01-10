@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -15,6 +16,7 @@ class UserController extends Controller
         Log::info('Getting user');
         try {
             $users = User::all()->toArray();
+
             return response([
                 'success' => true,
                 'message' => 'Users retrieving successfully',
@@ -26,7 +28,7 @@ class UserController extends Controller
             return response([
                 'success' => false,
                 'message' => 'Get users fails',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -46,7 +48,7 @@ class UserController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $user = User::find($userId);
@@ -58,14 +60,14 @@ class UserController extends Controller
                 "success" => true,
                 'message' => 'Username updated',
                 'data' => [$user->name, $user->surname]
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
 
             return response([
                 'success' => false,
                 'message' => 'Update user fails',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -80,19 +82,21 @@ class UserController extends Controller
                 return response([
                     'success' => true,
                     'message' => "Admins can't be deleted"
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $user->delete();
+
             return response([
                 'success' => true,
                 'message' => 'Profile deleted',
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Fail dropping user',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -112,14 +116,14 @@ class UserController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             if ($isAdmin !== 2) {
                 return response([
                     'success' => true,
                     'message' => "Only admins can do this"
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $user = User::find($request->input('user_id'));
 
@@ -127,7 +131,7 @@ class UserController extends Controller
                 return response([
                     'success' => true,
                     'message' => 'device_id dont match'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $user->role_id = 2;
             $user->save();
@@ -135,13 +139,14 @@ class UserController extends Controller
             return response([
                 'success' => true,
                 'message' => 'User role updated'
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+            
             return response([
                 'success' => false,
                 'message' => 'Something went wrong updating role user',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }
