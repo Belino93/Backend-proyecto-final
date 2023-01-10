@@ -39,17 +39,17 @@ Route::group([
 
 //JWT user endpoints
 Route::group([
-    'middleware' => ['jwt.auth', 'isAdmin']
+    'middleware' => 'jwt.auth'
 ], function () {
-    Route::patch('/users', [UserController::class, 'updateUser']);
-    Route::delete('/users', [UserController::class, 'deleteUser']);
-    Route::patch('/users/admin', [UserController::class, 'userUpdateRole']);
+    Route::patch('/users', [UserController::class, 'updateUser']); // Sacar del middlewar is admin
+    
 });
 
 // JWT user repairs endpoints
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
+    Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
     Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
     Route::post('/user/repairs/imei', [DeviceRepairController::class, 'getAllUserRepairByImei']);
@@ -72,12 +72,13 @@ Route::group([
     Route::patch('/user/repairs/next', [DeviceRepairController::class, 'nextRepairState']);
     Route::patch('/user/repairs/prev', [DeviceRepairController::class, 'prevRepairState']);
     Route::get('/admin/repairs', [DeviceRepairController::class, 'getAllUsersRepairs']);
+    Route::delete('/users', [UserController::class, 'deleteUser']);
+    Route::patch('/users/admin', [UserController::class, 'userUpdateRole']);
 
     // User endpoints(ADMIN)
     Route::get('/users', [UserController::class, 'getUsers']);
 
     // Repairs CRUD endpoints
-    Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
     Route::post('/repairs', [RepairController::class, 'newRepair']);
     Route::patch('/repairs', [RepairController::class, 'updateRepair']);
     Route::delete('/repairs', [RepairController::class, 'deleteRepair']);
