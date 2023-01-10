@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class DeviceController extends Controller
 {
@@ -17,17 +18,19 @@ class DeviceController extends Controller
         Log::info('Retrieving devices');
         try {
             $devices = Device::all();
+
             return response([
                 'success' => true,
                 'message' => 'All devices retrieved successfully',
                 'data' => $devices,
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong retrieving devices',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -44,28 +47,30 @@ class DeviceController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $brand = $request->input('brand');
             $devices = Device::where('brand', $brand)->get();
+
             if (!$devices) {
                 return response([
                     'success' => true,
                     'message' => 'This brand is not in database'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             return response([
                 'success' => true,
                 'message' => 'Devices by brand retrieve successfully',
                 'data' => $devices
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong retrieving devices by branch',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -83,7 +88,7 @@ class DeviceController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $device = new Device;
 
@@ -95,13 +100,14 @@ class DeviceController extends Controller
                 'success' => true,
                 'message' => 'Device created successfully',
                 'data' => $device
-            ]);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong creating devices',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -122,7 +128,7 @@ class DeviceController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $device = Device::find($request->input('device_id'));
 
@@ -130,22 +136,24 @@ class DeviceController extends Controller
                 return response([
                     'success' => true,
                     'message' => 'device_id dont match'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $device->brand = $request->input('brand');
             $device->model = $request->input('model');
             $device->save();
+
             return response([
                 'success' => true,
                 'message' => 'Device updated'
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong updating device',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -162,7 +170,7 @@ class DeviceController extends Controller
                 return response([
                     'success' => false,
                     'message' => $validator->messages()
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             $device = Device::find($request->input('device_id'));
@@ -170,19 +178,21 @@ class DeviceController extends Controller
                 return response([
                     'success' => true,
                     'message' => 'device_id dont match'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
             $device->delete();
+
             return response([
                 'success' => true,
                 'message' => 'Device dropped succesfully'
-            ], 200);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong dropping device',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -198,13 +208,14 @@ class DeviceController extends Controller
                 'success' => true,
                 'message' => 'Retrieving brands successfully',
                 'data' => $brands
-            ]);
+            ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong retrieving brands',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

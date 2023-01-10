@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
                 'surname' => 'Cisco',
                 'email' => 'fran@gmail.com',
                 'password' => 'pass1234',
+                'role_id' => '2',
             ],
             [
                 'name' => 'Almu',
