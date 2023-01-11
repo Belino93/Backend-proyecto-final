@@ -27,14 +27,17 @@ use Illuminate\Support\Facades\Route;
 // Auth public endpoints
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/devices', [DeviceController::class, 'getDevices']);
+Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
+Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
 
 // Devices CRUD endpoints
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::get('/devices', [DeviceController::class, 'getDevices']);
-    Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
-    Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
+    // Route::get('/devices', [DeviceController::class, 'getDevices']);
+    // Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
+    // Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
 });
 
 //JWT user endpoints
@@ -42,7 +45,7 @@ Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
     Route::patch('/users', [UserController::class, 'updateUser']); // Sacar del middlewar is admin
-    
+
 });
 
 // JWT user repairs endpoints

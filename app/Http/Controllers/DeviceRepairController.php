@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\UserRepair;
 use App\Models\Device;
 use App\Models\Repair;
+use Http\Message\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -26,14 +27,14 @@ class DeviceRepairController extends Controller
                 ->join('devices', 'device_repair.device_id', '=', 'devices.id')
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
                 ->join('states', 'device_repair.state_id', '=', 'states.id')
-                ->select('device_repair.id', 'devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.created_at', 'device_repair.updated_at', "device_repair.user_id")
+                ->select('device_repair.id', 'devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name as status', 'device_repair.created_at', 'device_repair.updated_at', "device_repair.user_id")
                 ->where('device_repair.user_id', '=', $userId)
                 ->orderBy('device_repair.id', 'desc')
                 ->get();
             if (count($repairs) === self::EMPTY_ARRAY) {
                 return response([
                     'success' => true,
-                    'message' => 'This user not have any repair',
+                    'message' => 'This user does not have any repair',
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -55,6 +56,7 @@ class DeviceRepairController extends Controller
     public function getAllUserRepairByImei(Request $request)
     {
         Log::info('Getting all user repairs by Imei');
+
         try {
             $userId = auth()->user()->id;
             $validator = Validator::make($request->all(), [
@@ -67,6 +69,7 @@ class DeviceRepairController extends Controller
                     'message' => $validator->messages()
                 ], Response::HTTP_BAD_REQUEST);
             }
+
             $repairs = DB::table('device_repair')
                 ->join('devices', 'device_repair.device_id', '=', 'devices.id')
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
@@ -76,6 +79,7 @@ class DeviceRepairController extends Controller
                 ->where('device_repair.imei', 'like', '%' . $request->input('imei') . '%')
                 ->orderBy('device_repair.id', 'desc')
                 ->get();
+
             if (!$repairs) {
                 return response([
                     'success' => true,
@@ -115,7 +119,7 @@ class DeviceRepairController extends Controller
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
                 ->join('states', 'device_repair.state_id', '=', 'states.id')
                 ->join('users', 'device_repair.user_id', '=', 'users.id')
-                ->select('devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'users.email', 'device_repair.created_at', 'device_repair.updated_at')
+                ->select('device_repair.id', 'devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'users.email', 'device_repair.created_at', 'device_repair.updated_at')
                 ->orderBy('device_repair.id', 'desc')
                 ->get();
 
@@ -345,7 +349,7 @@ class DeviceRepairController extends Controller
                 ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-            
+
             return response([
                 'success' => false,
                 'message' => 'Something went wrong updating user repair',
