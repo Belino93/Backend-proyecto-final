@@ -35,12 +35,14 @@ class AuthController extends Controller
                 'email' => $request->get('email'),
                 'password' => bcrypt($request->password)
             ]);
+            
             $token = JWTAuth::fromUser($user);
             $mailData = [
                 'title' => 'Welcome to Fixapp',
                 'user' => $user
             ];
-            Mail::to($request->input('email'))->send(new UserRegistered($mailData));
+
+            // Mail::to($request->input('email'))->send(new UserRegistered($mailData));
 
             return response()->json(compact('user', 'token'), 201);
         } catch (\Throwable $th) {
@@ -57,9 +59,9 @@ class AuthController extends Controller
     {
         try {
             $input = $request->only('email', 'password');
-            $jwt_token = null;
+            $jwt_token = JWTAuth::attempt($input);
 
-            if (!$jwt_token = JWTAuth::attempt($input)) {
+            if (!$jwt_token) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid Email or Password',
