@@ -30,6 +30,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/devices', [DeviceController::class, 'getDevices']);
 Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
 Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
+Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
+
 
 // Devices CRUD endpoints
 Route::group([
@@ -52,7 +54,6 @@ Route::group([
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
     Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
     Route::post('/user/repairs/imei', [DeviceRepairController::class, 'getAllUserRepairByImei']);
