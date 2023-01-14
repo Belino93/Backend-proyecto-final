@@ -30,6 +30,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/devices', [DeviceController::class, 'getDevices']);
 Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
 Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
+Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
+
 
 // Devices CRUD endpoints
 Route::group([
@@ -52,7 +54,6 @@ Route::group([
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
     Route::get('/user/repairs', [DeviceRepairController::class, 'getUserRepairs']);
     Route::post('/user/repairs', [DeviceRepairController::class, 'newDeviceRepair']);
     Route::post('/user/repairs/imei', [DeviceRepairController::class, 'getAllUserRepairByImei']);
@@ -80,6 +81,7 @@ Route::group([
 
     // User endpoints(ADMIN)
     Route::get('/users', [UserController::class, 'getUsers']);
+    Route::delete('/users/delete', [UserController::class, 'deleteUserByAdmin' ]);
 
     // Repairs CRUD endpoints
     Route::post('/repairs', [RepairController::class, 'newRepair']);
@@ -88,5 +90,5 @@ Route::group([
     // Devices endpoint
     Route::post('/devices/new', [DeviceController::class, 'newDevice']);
     Route::patch('/devices', [DeviceController::class, 'updateDevice']);
-    Route::delete('devices', [DeviceController::class, 'deleteDevice']);
+    Route::delete('/devices', [DeviceController::class, 'deleteDevice']);
 });

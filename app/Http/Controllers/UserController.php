@@ -99,6 +99,44 @@ class UserController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
     }
+    public function deleteUserByAdmin(Request $request)
+    {
+        Log::info('Dropping user by Admin');
+        $userDelete = $request->input('user_id');
+
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|integer',
+            ]);
+
+            if ($validator->fails()) {
+                return response([
+                    'success' => false,
+                    'message' => $validator->messages()
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $user = User::find($userDelete);
+            if ($user->role_id === 2) {
+                return response([
+                    'success' => true,
+                    'message' => "Admins can't be deleted"
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $user->delete();
+
+            return response([
+                'success' => true,
+                'message' => 'Profile deleted',
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+
+            return response([
+                'success' => false,
+                'message' => 'Fail dropping user',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
 
     // Admin can update users to admin
     public function userUpdateRole(Request $request)
