@@ -81,6 +81,7 @@ Route::group([
 
     // User endpoints(ADMIN)
     Route::get('/users', [UserController::class, 'getUsers']);
+    Route::delete('/users/delete', [UserController::class, 'deleteUserByAdmin' ]);
 
     // Repairs CRUD endpoints
     Route::post('/repairs', [RepairController::class, 'newRepair']);
@@ -89,5 +90,5 @@ Route::group([
     // Devices endpoint
     Route::post('/devices/new', [DeviceController::class, 'newDevice']);
     Route::patch('/devices', [DeviceController::class, 'updateDevice']);
-    Route::delete('devices', [DeviceController::class, 'deleteDevice']);
+    Route::delete('/devices', [DeviceController::class, 'deleteDevice']);
 });
