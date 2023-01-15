@@ -11,10 +11,13 @@
 
 Proyecto final del curso de GeeksHubs academy.
 
-En este caso la tematica era libre, y he elegido crear Fixapp una plataforma que permite gestionar reparaciones de dispositivos moviles. 
+En este caso la tematica era libre, y he elegido crear Fixapp una plataforma que permite gestionar reparaciones de dispositivos moviles.
+En este repositorio se encuentra la parte backend del proyecto. 
+Repositorio Frontend React: https://github.com/Belino93/frontend-proyecto-final
 
 La relación entre tablas seria la siguiente:
-(IMAGEN BBDD)
+![DDBB](https://user-images.githubusercontent.com/90568424/212538376-7cf588ee-ee30-4efd-af88-e0ffa8d99c7f.PNG)
+
 
 
 ## Uso de la API
