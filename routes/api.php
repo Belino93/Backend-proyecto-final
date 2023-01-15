@@ -46,7 +46,7 @@ Route::group([
 Route::group([
     'middleware' => 'jwt.auth'
 ], function () {
-    Route::patch('/users', [UserController::class, 'updateUser']); // Sacar del middlewar is admin
+    Route::patch('/users', [UserController::class, 'updateUser']);
 
 });
 
