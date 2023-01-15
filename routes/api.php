@@ -33,14 +33,6 @@ Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
 Route::get('/repairs', [RepairController::class, 'getAllRepairs']);
 
 
-// Devices CRUD endpoints
-Route::group([
-    'middleware' => 'jwt.auth'
-], function () {
-    // Route::get('/devices', [DeviceController::class, 'getDevices']);
-    // Route::post('/devices/brand', [DeviceController::class, 'getDevicesByBrand']);
-    // Route::get('/devices/brand', [DeviceController::class, 'getBrands']);
-});
 
 //JWT user endpoints
 Route::group([
