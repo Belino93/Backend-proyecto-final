@@ -59,6 +59,7 @@ class DeviceRepairController extends Controller
 
         try {
             $userId = auth()->user()->id;
+            $userRole = auth()->user()->role_id;
             $validator = Validator::make($request->all(), [
                 'imei' => 'required|integer',
             ]);
@@ -69,8 +70,8 @@ class DeviceRepairController extends Controller
                     'message' => $validator->messages()
                 ], Response::HTTP_BAD_REQUEST);
             }
-
-            $repairs = DB::table('device_repair')
+            if($userRole !== self::ROLE_ADMIN){
+                $repairs = DB::table('device_repair')
                 ->join('devices', 'device_repair.device_id', '=', 'devices.id')
                 ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
                 ->join('states', 'device_repair.state_id', '=', 'states.id')
@@ -79,6 +80,17 @@ class DeviceRepairController extends Controller
                 ->where('device_repair.imei', 'like', '%' . $request->input('imei') . '%')
                 ->orderBy('device_repair.id', 'desc')
                 ->get();
+            }elseif ($userRole === self::ROLE_ADMIN) {
+                $repairs = DB::table('device_repair')
+                ->join('devices', 'device_repair.device_id', '=', 'devices.id')
+                ->join('repairs', 'device_repair.repair_id', '=', 'repairs.id')
+                ->join('states', 'device_repair.state_id', '=', 'states.id')
+                ->select('device_repair.id', 'devices.brand', 'devices.model', 'repairs.type', 'device_repair.imei', 'states.name', 'device_repair.created_at', 'device_repair.updated_at')
+                ->where('device_repair.imei', 'like', '%' . $request->input('imei') . '%')
+                ->orderBy('device_repair.id', 'desc')
+                ->get();
+            }
+            
 
             if (!$repairs) {
                 return response([
